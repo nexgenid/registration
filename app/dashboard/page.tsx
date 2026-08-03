@@ -16,7 +16,7 @@ import { getRegistrationStatus } from "@/app/lib/registrationLog";
 
 export default function DashboardOverview() {
   const [userData, setUserData] = useState<any>(null);
-  const [statusData, setStatusData] = useState({ document: false, status: 'pending', remark: '' });
+  const [statusData, setStatusData] = useState({ document: false, status: 'pending', remark: '', meeting_link: '' });
 
   useEffect(() => {
     async function initData() {
@@ -118,9 +118,9 @@ export default function DashboardOverview() {
               Tahap Seleksi
             </p>
             <h4 className="text-lg font-bold text-slate-800 mt-0.5">
-              {statusData.status === 'Accepted' ? "Lolos Seleksi" : 
+              {statusData.status === 'Accepted' ? "Lolos Seleksi Berkas" : 
                statusData.status === 'Rejected' ? "Ditolak HR" : 
-               statusData.document ? "Menunggu HR" : 
+               statusData.document ? "Menunggu Review HR" : 
                "Menunggu Upload"}
             </h4>
           </div>
@@ -216,32 +216,95 @@ export default function DashboardOverview() {
         </div> */}
 
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-gradient-to-br from-blue-900 to-indigo-950 rounded-2xl shadow-xl overflow-hidden relative">
-            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
-            <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl"></div>
-
-            <div className="p-5 border-b border-white/10 flex items-center justify-between relative z-10">
-              <h3 className="font-bold text-white flex items-center gap-2 text-sm">
-                <Video className="w-4 h-4 text-blue-400" />
-                Jadwal Wawancara
-              </h3>
-              <span className="px-2 py-0.5 bg-slate-500/20 text-slate-300 text-[10px] font-bold rounded uppercase tracking-wider border border-slate-500/30">
-                Menunggu
-              </span>
-            </div>
-
-            <div className="p-6 relative z-10 flex flex-col items-center justify-center text-center space-y-3 min-h-[220px]">
-              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-2 border border-white/10">
-                <Calendar className="w-7 h-7 text-blue-300" />
+          {statusData.status === 'Accepted' && statusData.meeting_link ? (
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                  <Video className="w-5 h-5 text-blue-600" />
+                  Jadwal Wawancara Online
+                </h3>
+                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full uppercase tracking-wider border border-emerald-200">
+                  Tersedia
+                </span>
               </div>
-              <h4 className="text-white font-bold">
-                Jadwal Belum Ditentukan
-              </h4>
-              <p className="text-indigo-200 text-xs leading-relaxed max-w-[250px]">
-                Link tautan pertemuan Zoom dan detail jadwal wawancara akan otomatis muncul di sini apabila berkas lamaran Anda dinyatakan <span className="font-bold text-blue-400">LOLOS</span> tahap awal.
-              </p>
+
+              <div className="p-6 md:p-8 flex flex-col items-center justify-center text-center space-y-5 relative overflow-hidden">
+                {/* Decorative Zoom-like background elements */}
+                <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-indigo-50 rounded-full blur-3xl"></div>
+                
+                <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-2 shadow-sm border border-blue-100 relative z-10 rotate-3 transition-transform hover:rotate-6">
+                  <div className="w-16 h-16 bg-[#0b5cff] rounded-2xl flex items-center justify-center -rotate-3">
+                    <Video className="w-8 h-8 text-white" fill="currentColor" />
+                  </div>
+                </div>
+                
+                <div className="relative z-10">
+                  <h4 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">
+                    Undangan Wawancara via Zoom
+                  </h4>
+                  <p className="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
+                    Selamat! Anda telah lolos tahap seleksi awal. Silakan bergabung ke sesi wawancara online melalui tautan di bawah ini.
+                  </p>
+                </div>
+
+                <div className="w-full max-w-md bg-slate-50 border border-slate-200 rounded-xl p-4 mt-2 relative z-10">
+                  <div className="flex flex-col gap-3">
+                    <div className="text-left">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tautan Pertemuan</span>
+                      <a 
+                        href={statusData.meeting_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block mt-1 text-sm font-semibold text-[#0b5cff] hover:text-blue-800 truncate underline-offset-4 hover:underline"
+                      >
+                        {statusData.meeting_link}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <a 
+                  href={statusData.meeting_link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="mt-4 px-8 py-3.5 bg-[#0b5cff] hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center gap-3 relative z-10 hover:-translate-y-0.5"
+                >
+                  <Video className="w-5 h-5" />
+                  Join Zoom Meeting
+                </a>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-gradient-to-br from-blue-900 to-indigo-950 rounded-2xl shadow-xl overflow-hidden relative">
+              <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl"></div>
+
+              <div className="p-5 border-b border-white/10 flex items-center justify-between relative z-10">
+                <h3 className="font-bold text-white flex items-center gap-2 text-sm">
+                  <Video className="w-4 h-4 text-blue-400" />
+                  Jadwal Wawancara
+                </h3>
+                <span className="px-2 py-0.5 bg-slate-500/20 text-slate-300 text-[10px] font-bold rounded uppercase tracking-wider border border-slate-500/30">
+                  Menunggu
+                </span>
+              </div>
+
+              <div className="p-6 relative z-10 flex flex-col items-center justify-center text-center space-y-3 min-h-[220px]">
+                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-2 border border-white/10">
+                  <Calendar className="w-7 h-7 text-blue-300" />
+                </div>
+                <h4 className="text-white font-bold">
+                  {statusData.status === 'Accepted' ? "Menunggu Tautan Zoom" : "Jadwal Belum Ditentukan"}
+                </h4>
+                <p className="text-indigo-200 text-xs leading-relaxed max-w-[250px]">
+                  {statusData.status === 'Accepted'
+                    ? "Berkas lamaran Anda telah dinyatakan LOLOS. Tim HR kami sedang menyiapkan tautan Zoom untuk sesi wawancara Anda."
+                    : "Link tautan pertemuan Zoom dan detail jadwal wawancara akan otomatis muncul di sini apabila berkas lamaran Anda dinyatakan LOLOS tahap awal."}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

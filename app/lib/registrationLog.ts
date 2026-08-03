@@ -27,12 +27,12 @@ export async function updateDocumentStatus(accountId: string) {
 
 export async function getRegistrationStatus(accountId: string) {
   try {
-    const query = `SELECT document, status, remark FROM registration_log WHERE user_id = $1`;
+    const query = `SELECT document, status, remark, meeting_link FROM registration_log WHERE user_id = $1`;
     const res = await pool.query(query, [accountId]);
     if (res.rows.length > 0) {
       return { success: true, data: res.rows[0] };
     }
-    return { success: true, data: { document: false, status: 'Pending', remark: null } };
+    return { success: true, data: { document: false, status: 'Pending', remark: null, meeting_link: null } };
   } catch (error: any) {
     console.error("Error fetching registration status:", error);
     return { success: false, error: error.message || "Failed to fetch status" };

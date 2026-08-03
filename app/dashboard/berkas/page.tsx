@@ -358,7 +358,7 @@ export default function DashboardBerkas() {
                 onClick={handleSubmitAll}
                 disabled={!allUploaded || isSubmitting || statusData.status === 'Processing'}
                 className={`px-6 py-3 font-bold rounded-xl shadow-lg transition-all flex items-center gap-2 ${
-                  allUploaded && !isSubmitting && statusData.status !== 'Processing'
+                  allUploaded && !isSubmitting && statusData.status !== 'Processing' && statusData.status !== 'Accepted' && statusData.status !== 'Rejected'
                   ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/25 hover:-translate-y-0.5" 
                   : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
                 }`}
@@ -370,6 +370,10 @@ export default function DashboardBerkas() {
                   </>
                 ) : statusData.status === 'Processing' ? (
                   "Sedang Direview HR"
+                ) : statusData.status === 'Accepted' ? (
+                  "Sudah Diterima"
+                ) : statusData.status === 'Rejected' ? (
+                  "Ditolak HR"
                 ) : (
                   "Kirim & Simpan Berkas"
                 )}

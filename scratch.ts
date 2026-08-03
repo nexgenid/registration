@@ -1,0 +1,1 @@
+import { config } from 'dotenv'; config({ path: '.env' }); import pool from './app/lib/neon'; async function main() { const res = await pool.query("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'registration_log'"); console.log(res.rows); } main();
