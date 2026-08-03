@@ -10,11 +10,11 @@ export async function updateDocumentStatus(accountId: string) {
 
     if (checkRes.rows.length > 0) {
       // Update existing row (set status back to processing when re-submitting)
-      const updateQuery = `UPDATE registration_log SET document = true, status = 'processing' WHERE user_id = $1`;
+      const updateQuery = `UPDATE registration_log SET document = true, status = 'Processing', remark = NULL WHERE user_id = $1`;
       await pool.query(updateQuery, [accountId]);
     } else {
       // Insert new row
-      const insertQuery = `INSERT INTO registration_log (user_id, document, status) VALUES ($1, true, 'processing')`;
+      const insertQuery = `INSERT INTO registration_log (user_id, document, status, remark) VALUES ($1, true, 'Processing', NULL)`;
       await pool.query(insertQuery, [accountId]);
     }
     
@@ -32,7 +32,7 @@ export async function getRegistrationStatus(accountId: string) {
     if (res.rows.length > 0) {
       return { success: true, data: res.rows[0] };
     }
-    return { success: true, data: { document: false, status: 'pending', remark: null } };
+    return { success: true, data: { document: false, status: 'Pending', remark: null } };
   } catch (error: any) {
     console.error("Error fetching registration status:", error);
     return { success: false, error: error.message || "Failed to fetch status" };

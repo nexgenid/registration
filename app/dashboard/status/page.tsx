@@ -48,9 +48,9 @@ export default function DashboardStatus() {
   }
 
   const isDocumentSent = statusData.document === true;
-  const isProcessing = statusData.status === 'processing';
-  const isAccepted = statusData.status === 'accepted';
-  const isRejected = statusData.status === 'rejected';
+  const isProcessing = statusData.status === 'Processing';
+  const isAccepted = statusData.status === 'Accepted';
+  const isRejected = statusData.status === 'Rejected';
 
   return (
     <>

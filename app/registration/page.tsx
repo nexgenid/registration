@@ -95,7 +95,7 @@ export default function RegistrationPage() {
       }
 
       setIsSubmitting(false); // <--- Tambahkan ini
-      router.push("/");
+      router.push("/login");
     } catch (error) {
       console.error("Registration error:", error);
       setFormError("Gagal mendaftar. Email mungkin sudah terdaftar atau terjadi kesalahan server.");

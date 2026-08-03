@@ -9,7 +9,8 @@ import {
   Lock,
   Camera,
   Video,
-  Calendar
+  Calendar,
+  XCircle
 } from "lucide-react";
 import { getRegistrationStatus } from "@/app/lib/registrationLog";
 
@@ -53,6 +54,22 @@ export default function DashboardOverview() {
         </p>
       </div>
 
+      {statusData.status === 'Rejected' && statusData.remark && (
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-5 mb-2 mt-4 flex gap-4 items-start">
+          <XCircle className="w-6 h-6 text-rose-600 shrink-0 mt-0.5" />
+          <div>
+            <h3 className="text-rose-800 font-bold">Berkas Ditolak</h3>
+            <p className="text-sm text-rose-700 mt-1 leading-relaxed">
+              Tim HR kami mendapati ada berkas yang kurang sesuai. Pesan dari HR: <br />
+              <span className="font-semibold block mt-2 bg-rose-100/50 p-2 rounded-md">"{statusData.remark}"</span>
+            </p>
+            <p className="text-sm text-rose-700 mt-3 font-medium">
+              Silakan perbaiki dan unggah kembali di menu Kelengkapan Berkas.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
@@ -84,14 +101,14 @@ export default function DashboardOverview() {
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
           <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${
-            statusData.status === 'accepted' ? 'bg-emerald-50' : 
-            statusData.status === 'rejected' ? 'bg-rose-50' : 
+            statusData.status === 'Accepted' ? 'bg-emerald-50' : 
+            statusData.status === 'Rejected' ? 'bg-rose-50' : 
             statusData.document ? 'bg-indigo-50' : 
             'bg-slate-100'
           }`}>
             <Clock className={`w-6 h-6 ${
-              statusData.status === 'accepted' ? 'text-emerald-600' : 
-              statusData.status === 'rejected' ? 'text-rose-500' : 
+              statusData.status === 'Accepted' ? 'text-emerald-600' : 
+              statusData.status === 'Rejected' ? 'text-rose-500' : 
               statusData.document ? 'text-indigo-600' : 
               'text-slate-400'
             }`} />
@@ -101,8 +118,8 @@ export default function DashboardOverview() {
               Tahap Seleksi
             </p>
             <h4 className="text-lg font-bold text-slate-800 mt-0.5">
-              {statusData.status === 'accepted' ? "Lolos Seleksi" : 
-               statusData.status === 'rejected' ? "Ditolak HR" : 
+              {statusData.status === 'Accepted' ? "Lolos Seleksi" : 
+               statusData.status === 'Rejected' ? "Ditolak HR" : 
                statusData.document ? "Menunggu HR" : 
                "Menunggu Upload"}
             </h4>
