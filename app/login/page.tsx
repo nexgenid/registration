@@ -63,7 +63,7 @@ export default function CandidateLoginPage() {
   return (
     <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-12 text-slate-800 font-sans">
       {/* Left Column: Full Screen Editorial & Branding Wall (5 cols on large screen) */}
-      <div className="lg:col-span-5 text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden min-h-[350px] lg:min-h-screen">
+      <div className="lg:col-span-5 bg-slate-900 text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden min-h-[350px] lg:min-h-screen">
         <div className="absolute top-1/3 -left-32 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-10 -right-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none" />
 
