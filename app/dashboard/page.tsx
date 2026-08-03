@@ -11,24 +11,35 @@ import {
   Video,
   Calendar
 } from "lucide-react";
+import { getRegistrationStatus } from "@/app/lib/registrationLog";
 
 export default function DashboardOverview() {
   const [userData, setUserData] = useState<any>(null);
+  const [statusData, setStatusData] = useState({ document: false, status: 'pending', remark: '' });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("nexgen_candidate_session");
-      if (saved) {
-        try {
-          const session = JSON.parse(saved);
-          if (session?.candidateData) {
-            setUserData(session.candidateData);
+    async function initData() {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("nexgen_candidate_session");
+        if (saved) {
+          try {
+            const session = JSON.parse(saved);
+            if (session?.candidateData) {
+              setUserData(session.candidateData);
+              if (session.candidateData.account_id) {
+                const res = await getRegistrationStatus(session.candidateData.account_id);
+                if (res.success && res.data) {
+                  setStatusData(res.data);
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Error parsing session:", error);
           }
-        } catch (error) {
-          console.error("Error parsing session:", error);
         }
       }
     }
+    initData();
   }, []);
 
   return (
@@ -58,36 +69,49 @@ export default function DashboardOverview() {
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
-            <FileCheck2 className="w-6 h-6 text-rose-500" />
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${statusData.document ? 'bg-emerald-50' : 'bg-rose-50'}`}>
+            <FileCheck2 className={`w-6 h-6 ${statusData.document ? 'text-emerald-600' : 'text-rose-500'}`} />
           </div>
           <div>
             <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Kelengkapan Berkas
             </p>
             <h4 className="text-lg font-bold text-slate-800 mt-0.5">
-              Belum Lengkap
+              {statusData.document ? "Sudah Lengkap" : "Belum Lengkap"}
             </h4>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-            <Clock className="w-6 h-6 text-emerald-600" />
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${
+            statusData.status === 'accepted' ? 'bg-emerald-50' : 
+            statusData.status === 'rejected' ? 'bg-rose-50' : 
+            statusData.document ? 'bg-indigo-50' : 
+            'bg-slate-100'
+          }`}>
+            <Clock className={`w-6 h-6 ${
+              statusData.status === 'accepted' ? 'text-emerald-600' : 
+              statusData.status === 'rejected' ? 'text-rose-500' : 
+              statusData.document ? 'text-indigo-600' : 
+              'text-slate-400'
+            }`} />
           </div>
           <div>
             <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Tahap Seleksi
             </p>
             <h4 className="text-lg font-bold text-slate-800 mt-0.5">
-              Menunggu Upload
+              {statusData.status === 'accepted' ? "Lolos Seleksi" : 
+               statusData.status === 'rejected' ? "Ditolak HR" : 
+               statusData.document ? "Menunggu HR" : 
+               "Menunggu Upload"}
             </h4>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-3 space-y-6">
+        {/* <div className="lg:col-span-3 space-y-6">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center gap-3">
               <User className="w-5 h-5 text-indigo-600" />
@@ -172,7 +196,7 @@ export default function DashboardOverview() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="lg:col-span-3 space-y-6">
           <div className="bg-gradient-to-br from-blue-900 to-indigo-950 rounded-2xl shadow-xl overflow-hidden relative">
