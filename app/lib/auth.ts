@@ -38,7 +38,21 @@ export async function registerUser(
 
   try {
     const result = await pool.query(query, values);
-    return result.rows[0] as RegistrationResult;
+    const newUser = result.rows[0] as RegistrationResult;
+
+    // Automatically add the user to registration_log with 'Registered' status
+    try {
+      const logQuery = `
+        INSERT INTO registration_log (user_id, document, status, remark)
+        VALUES ($1, false, 'Registered', NULL)
+      `;
+      await pool.query(logQuery, [newUser.account_id]);
+    } catch (logError) {
+      console.error('Error inserting into registration_log:', logError);
+      // We log the error but still return the user, or you can throw if you want strict consistency
+    }
+
+    return newUser;
   } catch (error) {
     console.error('Error inserting into account:', error);
     throw new Error('Registration failed');

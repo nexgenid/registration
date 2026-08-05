@@ -11,6 +11,7 @@ import {
   Bell,
   ChevronRight,
   Menu,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -22,6 +23,12 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [userName, setUserName] = useState("Calon Member");
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Close mobile sidebar when route changes
+  useEffect(() => {
+    setIsMobileSidebarOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -55,6 +62,80 @@ export default function DashboardLayout({
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden text-slate-800 font-sans">
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+          
+          {/* Sidebar */}
+          <aside className="relative w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 shadow-2xl animate-in slide-in-from-left-4 duration-300">
+            <button 
+              className="absolute top-4 right-4 p-2 text-slate-500 hover:bg-slate-100 rounded-lg z-10"
+              onClick={() => setIsMobileSidebarOpen(false)}
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div>
+              <div className="h-16 flex items-center px-6 border-b border-slate-200">
+                <div className="flex items-center gap-2 font-bold text-xl text-slate-800">
+                  <Image
+                    src={"/logo-bg.png"}
+                    alt="Logo NextGenID"
+                    width={180}
+                    height={180}
+                    unoptimized
+                  />
+                </div>
+              </div>
+
+              <nav className="p-4 space-y-1.5">
+                <p className="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 mt-4">
+                  Main Menu
+                </p>
+
+                <Link
+                  href="/dashboard"
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all ${pathname === "/dashboard" ? "bg-indigo-900 text-white shadow-sm shadow-indigo-900/20" : "text-slate-600 hover:text-indigo-600 hover:bg-indigo-50"}`}
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  Overview
+                </Link>
+
+                <Link
+                  href="/dashboard/berkas"
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all ${pathname === "/dashboard/berkas" ? "bg-indigo-900 text-white shadow-sm shadow-indigo-900/20" : "text-slate-600 hover:text-indigo-600 hover:bg-indigo-50"}`}
+                >
+                  <FileText className="w-5 h-5" />
+                  Kelengkapan Berkas
+                </Link>
+
+                <Link
+                  href="/dashboard/status"
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all ${pathname === "/dashboard/status" ? "bg-indigo-900 text-white shadow-sm shadow-indigo-900/20" : "text-slate-600 hover:text-indigo-600 hover:bg-indigo-50"}`}
+                >
+                  <UserCheck className="w-5 h-5" />
+                  Status Penerimaan
+                </Link>
+              </nav>
+            </div>
+
+            <div className="p-4 border-t border-slate-100">
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-3 px-3 py-2.5 text-rose-600 hover:bg-rose-50 rounded-xl font-bold text-sm transition-all"
+              >
+                <LogOut className="w-5 h-5" />
+                Logout
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* Sidebar - Desktop */}
       <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col justify-between shrink-0">
         <div>
@@ -117,7 +198,10 @@ export default function DashboardLayout({
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10">
           <div className="flex items-center gap-3">
-            <button className="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+            <button 
+              className="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg"
+              onClick={() => setIsMobileSidebarOpen(true)}
+            >
               <Menu className="w-5 h-5" />
             </button>
             <div className="hidden sm:flex items-center gap-2 text-sm font-medium">
